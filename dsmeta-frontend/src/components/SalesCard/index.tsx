@@ -11,7 +11,7 @@ import { Sale } from "../../models/Sale";
 
 function SalesCard() {
   const max = new Date();
-  const min = new Date().setDate(max.getDate() - 365);
+  const min = new Date(new Date().setDate(max.getDate() - 365));
 
   const [minDate, setMinDate] = useState(min);
   const [maxDate, setMaxDate] = useState(max);
@@ -19,10 +19,13 @@ function SalesCard() {
   const [sales, setSales] = useState<Sale[]>([]);
 
   useEffect(() => {
+    const dMin = minDate.toISOString().slice(0, 10);
+    const dMax = maxDate.toISOString().slice(0, 10);
+
     axios
-      .get(`${BASE_URL}/sales`)
+      .get(`${BASE_URL}/sales?minDate=${dMin}&maxDate=${dMax}`)
       .then((response) => setSales(response.data.content));
-  }, []);
+  }, [minDate, maxDate]);
 
   return (
     <div className="dsmeta-card">
